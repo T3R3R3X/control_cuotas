@@ -1,3 +1,5 @@
 spring:
   application:
     name: control_cuotas
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE}
