@@ -13,6 +13,9 @@ y la gestión e información de los estudiantes.
 - SpringDoc OpenAPI / Swagger UI
 - Maven
 - JUnit y Spring Boot Test
+- MapStruct
+- Validation
+- Spring Data JPA
 
 ## Instalación
 
@@ -68,10 +71,20 @@ Los endpoints se encuentran bajo la ruta base `/api/v1/estudiantes`.
 
 | Método   | Ruta                       | Descripción                   |
 |----------|----------------------------|-------------------------------|
-| `GET`    | `/api/v1/estudiantes`      | Obtiene todos los estudiantes |
+| `GET`    | `/api/v1/estudiantes`      | Lista estudiantes paginados (`pagina`, `tamanio`, `estado`) |
+| `GET`    | `/api/v1/estudiantes/{id}` | Obtiene un estudiante por ID  |
 | `POST`   | `/api/v1/estudiantes`      | Crea un estudiante            |
 | `PUT`    | `/api/v1/estudiantes/{id}` | Actualiza un estudiante       |
-| `DELETE` | `/api/v1/estudiantes/{id}` | Elimina un estudiante         |
+| `DELETE` | `/api/v1/estudiantes/{id}/desactivar` | Desactiva un estudiante |
+| `PUT`    | `/api/v1/estudiantes/{id}/activar` | Reactiva un estudiante |
+
+El listado acepta los parámetros opcionales `pagina` (desde `0`), `tamanio` (mayor que `0`) y `estado` (`true` para activos o `false` para inactivos). Por ejemplo:
+
+```text
+GET /api/v1/estudiantes?pagina=0&tamanio=10&estado=true
+```
+
+Si `pagina` es negativo o `tamanio` es menor o igual a `0`, la API responde `400 Bad Request` con el título `Parámetros de paginación inválidos`.
 
 Ejemplo de cuerpo JSON para crear o actualizar un estudiante:
 
@@ -79,11 +92,11 @@ Ejemplo de cuerpo JSON para crear o actualizar un estudiante:
 {
   "nombre": "Ana",
   "apellido": "García",
-  "dni": "12345678",
-  "active": true,
-  "creadoEn": "2026-11-22T10:30:00"
+  "dni": "12345678"
 }
 ```
+
+El estado y las fechas se administran en el servidor; no deben incluirse en la solicitud.
 
 ## Arquitectura
 
