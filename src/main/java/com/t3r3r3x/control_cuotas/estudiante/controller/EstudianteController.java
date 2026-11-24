@@ -1,18 +1,20 @@
 package com.t3r3r3x.control_cuotas.estudiante.controller;
 
-import com.t3r3r3x.control_cuotas.estudiante.dto.ActualizarEstudianteRequest;
-import com.t3r3r3x.control_cuotas.estudiante.dto.CrearEstudianteRequest;
 import com.t3r3r3x.control_cuotas.estudiante.dto.EstudianteResponse;
+import com.t3r3r3x.control_cuotas.estudiante.dto.GuardarEstudianteRequest;
+import com.t3r3r3x.control_cuotas.estudiante.dto.RespuestaPaginada;
+import com.t3r3r3x.control_cuotas.estudiante.mapper.EstudianteMapper;
 import com.t3r3r3x.control_cuotas.estudiante.model.Estudiante;
-import com.t3r3r3x.control_cuotas.estudiante.service.IEstudianteService;
+import com.t3r3r3x.control_cuotas.estudiante.service.ServicioEstudiantes;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/estudiantes")
@@ -20,59 +22,68 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EstudianteController {
 
-    private final IEstudianteService estudianteService;
+    private final ServicioEstudiantes estudianteService;
+
+    private final EstudianteMapper estudianteMapper;
 
     @GetMapping
-    public ResponseEntity<List<EstudianteResponse>> obtenerTodo() {
+    public ResponseEntity<RespuestaPaginada<EstudianteResponse>> listarEstudiantesPaginados(
+            @RequestParam(name = "pagina", defaultValue = "0") int numeroPagina,
+            @RequestParam(name = "tamanio", defaultValue = "10") int tamanioPagina,
+            @RequestParam(name = "estado", defaultValue = "true") boolean activo
+    ) {
+        Page<Estudiante> estudiantes = estudianteService.listarEstudiantesPaginados(
+                numeroPagina, tamanioPagina, activo
+        );
 
-        List<Estudiante> estudiantes = estudianteService.obtenerTodo();
+        return ResponseEntity.ok().body(estudianteMapper.convertirAPaginaRespuesta(estudiantes));
+    }
 
-        return ResponseEntity.ok(estudiantes.stream().map(this::aEstudianteResponse).collect(Collectors.toList()));
+    @GetMapping("/{id}")
+    public ResponseEntity<EstudianteResponse> obtenerEstudiantePorId(@PathVariable UUID id) {
+        Estudiante estudiante = estudianteService.obtenerEstudiantePorId(id);
+
+        return ResponseEntity.ok(estudianteMapper.convertirARespuesta(estudiante));
     }
 
     @PostMapping
-    public ResponseEntity<EstudianteResponse> crear(@RequestBody CrearEstudianteRequest crearEstudianteRequest) {
+    public ResponseEntity<EstudianteResponse> crearEstudiante(
+            @RequestBody @Valid GuardarEstudianteRequest solicitudEstudiante
+    ) {
 
-        Estudiante estudiante = new Estudiante();
-        estudiante.setNombre(crearEstudianteRequest.getNombre());
-        estudiante.setApellido(crearEstudianteRequest.getApellido());
-        estudiante.setDni(crearEstudianteRequest.getDni());
+        Estudiante estudiante = estudianteMapper.convertirAEntidad(solicitudEstudiante);
 
-        Estudiante guardado = estudianteService.crear(estudiante);
+        Estudiante guardado = estudianteService.crearEstudiante(estudiante);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(aEstudianteResponse(guardado));
+        return ResponseEntity.status(HttpStatus.CREATED).body(estudianteMapper.convertirARespuesta(guardado));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EstudianteResponse> actualizar(@PathVariable Long id, @RequestBody ActualizarEstudianteRequest actualizarEstudianteRequest) {
+    public ResponseEntity<EstudianteResponse> actualizarEstudiante(
+            @PathVariable UUID id,
+            @RequestBody @Valid GuardarEstudianteRequest solicitudEstudiante
+    ) {
 
-        Estudiante estudiante = new Estudiante();
-        estudiante.setNombre(actualizarEstudianteRequest.getNombre());
-        estudiante.setApellido(actualizarEstudianteRequest.getApellido());
-        estudiante.setDni(actualizarEstudianteRequest.getDni());
+        Estudiante estudiante = estudianteMapper.convertirAEntidad(solicitudEstudiante);
 
-        Estudiante actualizado = estudianteService.actualizar(id, estudiante);
+        Estudiante actualizado = estudianteService.actualizarEstudiante(id, estudiante);
 
-        return ResponseEntity.ok(aEstudianteResponse(actualizado));
+        return ResponseEntity.ok(estudianteMapper.convertirARespuesta(actualizado));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<EstudianteResponse> eliminar(@PathVariable Long id) {
+    @DeleteMapping("/{id}/desactivar")
+    public ResponseEntity<EstudianteResponse> desactivarEstudiante(@PathVariable UUID id) {
 
-        Estudiante eliminado = estudianteService.eliminar(id);
+        Estudiante desactivado = estudianteService.desactivarEstudiante(id);
 
-        return ResponseEntity.ok(aEstudianteResponse(eliminado));
+        return ResponseEntity.ok(estudianteMapper.convertirARespuesta(desactivado));
     }
 
-    private EstudianteResponse aEstudianteResponse(Estudiante estudiante) {
-        EstudianteResponse estudianteResponse = new EstudianteResponse();
-        estudianteResponse.setId(estudiante.getId());
-        estudianteResponse.setNombre(estudiante.getNombre());
-        estudianteResponse.setApellido(estudiante.getApellido());
-        estudianteResponse.setDni(estudiante.getDni());
-        estudianteResponse.setActivo(estudiante.getActivo());
-        estudianteResponse.setCreadoEn(estudiante.getCreadoEn());
-        estudianteResponse.setActualizadoEn(estudiante.getActualizadoEn());
-        return estudianteResponse;
+    @PutMapping("/{id}/activar")
+    public ResponseEntity<EstudianteResponse> activarEstudiante(@PathVariable UUID id) {
+
+        Estudiante activado = estudianteService.activarEstudiante(id);
+
+        return ResponseEntity.ok(estudianteMapper.convertirARespuesta(activado));
     }
 }
