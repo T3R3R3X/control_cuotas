@@ -8,6 +8,8 @@ import com.t3r3r3x.control_cuotas.estudiante.model.Estudiante;
 import com.t3r3r3x.control_cuotas.estudiante.service.ServicioEstudiantes;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -28,8 +30,8 @@ public class EstudianteController {
 
     @GetMapping
     public ResponseEntity<RespuestaPaginada<EstudianteResponse>> listarEstudiantesPaginados(
-            @RequestParam(name = "pagina", defaultValue = "0") int numeroPagina,
-            @RequestParam(name = "tamanio", defaultValue = "10") int tamanioPagina,
+            @RequestParam(name = "pagina", defaultValue = "0") @Min(0) int numeroPagina,
+            @RequestParam(name = "tamanio", defaultValue = "10") @Positive int tamanioPagina,
             @RequestParam(name = "estado", defaultValue = "true") boolean activo
     ) {
         Page<Estudiante> estudiantes = estudianteService.listarEstudiantesPaginados(
