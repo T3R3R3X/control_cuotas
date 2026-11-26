@@ -56,11 +56,12 @@ public class EstudianteService implements ServicioEstudiantes {
     @Override
     public Estudiante actualizarEstudiante(UUID id, Estudiante estudiante) {
 
-        if (estudianteRepository.existsByDni(estudiante.getDni())) {
+        Estudiante estudianteExistente = obtenerEstudiantePorId(id);
+
+        // valido que otro estudiante no tenga el mismo DNI
+        if (estudianteRepository.existsByDniAndIdNot(estudiante.getDni(), id)) {
             throw new DniRegistradoException("El DNI ya está registrado");
         }
-
-        Estudiante estudianteExistente = obtenerEstudiantePorId(id);
 
         estudianteExistente.setNombre(estudiante.getNombre());
         estudianteExistente.setApellido(estudiante.getApellido());
