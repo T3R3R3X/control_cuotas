@@ -1,5 +1,7 @@
 package com.t3r3r3x.control_cuotas.shared.exception;
 
+import com.t3r3r3x.control_cuotas.categoria.exception.CategoriaNoEncontradaException;
+import com.t3r3r3x.control_cuotas.categoria.exception.NombreCategoriaRegistradaException;
 import com.t3r3r3x.control_cuotas.estudiante.exception.EstudianteNoEncontradoException;
 import com.t3r3r3x.control_cuotas.estudiante.exception.DniRegistradoException;
 import com.t3r3r3x.control_cuotas.estudiante.exception.ParametrosPaginacionInvalidosException;
@@ -90,6 +92,28 @@ public class GlobalExceptionHandler {
                 HttpStatus.BAD_REQUEST, ex.getMessage()
         );
         problema.setTitle("Parámetros de paginación inválidos");
+
+        return problema;
+    }
+
+    @ExceptionHandler(CategoriaNoEncontradaException.class)
+    public ProblemDetail manejarCategoriaNoEncontrada(CategoriaNoEncontradaException ex) {
+
+        ProblemDetail problema = ProblemDetail.forStatusAndDetail(
+                HttpStatus.NOT_FOUND, ex.getMessage()
+        );
+        problema.setTitle("Categoría no encontrada");
+
+        return problema;
+    }
+
+    @ExceptionHandler(NombreCategoriaRegistradaException.class)
+    public ProblemDetail manejarNombreCategoriaRegistrada(NombreCategoriaRegistradaException ex) {
+
+        ProblemDetail problema = ProblemDetail.forStatusAndDetail(
+                HttpStatus.CONFLICT, ex.getMessage()
+        );
+        problema.setTitle("Nombre de categoría ya registrado");
 
         return problema;
     }
