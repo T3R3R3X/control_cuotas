@@ -67,24 +67,29 @@ Con la aplicación en ejecución:
 
 ## Endpoints actuales
 
-Los endpoints se encuentran bajo la ruta base `/api/v1/estudiantes`.
+Los endpoints se encuentran bajo la ruta base `/api/v1/estudiantes`, `/api/v1/categorias`:
 
-| Método   | Ruta                       | Descripción                   |
-|----------|----------------------------|-------------------------------|
-| `GET`    | `/api/v1/estudiantes`      | Lista estudiantes paginados (`pagina`, `tamanio`, `estado`) |
-| `GET`    | `/api/v1/estudiantes/{id}` | Obtiene un estudiante por ID  |
-| `POST`   | `/api/v1/estudiantes`      | Crea un estudiante            |
-| `PUT`    | `/api/v1/estudiantes/{id}` | Actualiza un estudiante       |
-| `DELETE` | `/api/v1/estudiantes/{id}/desactivar` | Desactiva un estudiante |
-| `PUT`    | `/api/v1/estudiantes/{id}/activar` | Reactiva un estudiante |
+| Método   | Ruta                                  | Descripción                                                 |
+|----------|---------------------------------------|-------------------------------------------------------------|
+| `GET`    | `/api/v1/estudiantes`                 | Lista estudiantes paginados (`pagina`, `tamanio`, `estado`) |
+| `GET`    | `/api/v1/estudiantes/{id}`            | Obtiene un estudiante por ID                                |
+| `POST`   | `/api/v1/estudiantes`                 | Crea un estudiante                                          |
+| `PUT`    | `/api/v1/estudiantes/{id}`            | Actualiza un estudiante                                     |
+| `DELETE` | `/api/v1/estudiantes/{id}/desactivar` | Desactiva un estudiante                                     |
+| `PUT`    | `/api/v1/estudiantes/{id}/activar`    | Reactiva un estudiante                                      |
+| `GET`    | `/api/v1/categorias`                  | Lista categorias                                            |
+| `GET`    | `/api/v1/categorias/{id}`             | Obtiene una categoria por ID                                |
+| `POST`   | `/api/v1/categorias`                  | Crea una categoria                                          | 
 
-El listado acepta los parámetros opcionales `pagina` (desde `0`), `tamanio` (mayor que `0`) y `estado` (`true` para activos o `false` para inactivos). Por ejemplo:
+El listado acepta los parámetros opcionales `pagina` (desde `0`), `tamanio` (mayor que `0`) y `estado` (`true` para
+activos o `false` para inactivos). Por ejemplo:
 
 ```text
 GET /api/v1/estudiantes?pagina=0&tamanio=10&estado=true
 ```
 
-Si `pagina` es negativo o `tamanio` es menor o igual a `0`, la API responde `400 Bad Request` con el título `Parámetros de paginación inválidos`.
+Si `pagina` es negativo o `tamanio` es menor o igual a `0`, la API responde `400 Bad Request` con el título
+`Parámetros de paginación inválidos`.
 
 Ejemplo de cuerpo JSON para crear o actualizar un estudiante:
 
