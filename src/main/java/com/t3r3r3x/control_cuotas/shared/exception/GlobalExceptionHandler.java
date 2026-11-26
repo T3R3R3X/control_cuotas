@@ -5,9 +5,12 @@ import com.t3r3r3x.control_cuotas.estudiante.exception.DniRegistradoException;
 import com.t3r3r3x.control_cuotas.estudiante.exception.ParametrosPaginacionInvalidosException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +44,20 @@ public class GlobalExceptionHandler {
                 .forEach(error -> errores.add(error.getDefaultMessage()));
 
         problema.setProperty("errores", errores);
+
+        return problema;
+    }
+
+    @ExceptionHandler({
+            HandlerMethodValidationException.class,
+            MethodArgumentTypeMismatchException.class,
+            HttpMessageNotReadableException.class
+    })
+    public ProblemDetail manejarSolicitudInvalida(Exception ex) {
+        ProblemDetail problema = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST, "La solicitud contiene parámetros o datos inválidos"
+        );
+        problema.setTitle("Solicitud inválida");
 
         return problema;
     }
