@@ -13,5 +13,7 @@ public interface EstudianteRepository extends JpaRepository<Estudiante, UUID> {
 
     Page<Estudiante> findAllByActivo(Pageable pageable, Boolean activo);
 
+    boolean existsByDniAndIdNot(String dni, UUID id);
+
     boolean existsByDni(String dni);
 }
