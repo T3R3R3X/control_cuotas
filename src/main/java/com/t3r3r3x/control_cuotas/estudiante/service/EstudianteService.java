@@ -31,7 +31,7 @@ public class EstudianteService implements ServicioEstudiantes {
 
         Pageable pageable = PageRequest.of(numeroPagina, tamanioPagina);
 
-        return estudianteRepository.findAllByActivo(activo, pageable);
+        return estudianteRepository.findAllByActivo(pageable, activo);
     }
 
     @Override

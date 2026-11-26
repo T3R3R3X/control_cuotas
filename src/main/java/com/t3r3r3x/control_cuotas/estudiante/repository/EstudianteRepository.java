@@ -11,7 +11,7 @@ import java.util.UUID;
 @Repository
 public interface EstudianteRepository extends JpaRepository<Estudiante, UUID> {
 
-    Page<Estudiante> findAllByActivo(Boolean activo, Pageable pageable);
+    Page<Estudiante> findAllByActivo(Pageable pageable, Boolean activo);
 
     boolean existsByDni(String dni);
 }
