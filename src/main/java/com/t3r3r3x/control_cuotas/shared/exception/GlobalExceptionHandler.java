@@ -1,5 +1,7 @@
 package com.t3r3r3x.control_cuotas.shared.exception;
 
+import com.t3r3r3x.control_cuotas.actividad.exception.ActividadNoEncontradaException;
+import com.t3r3r3x.control_cuotas.actividad.exception.NombreActividadRegistradaException;
 import com.t3r3r3x.control_cuotas.categoria.exception.CategoriaNoEncontradaException;
 import com.t3r3r3x.control_cuotas.categoria.exception.NombreCategoriaRegistradaException;
 import com.t3r3r3x.control_cuotas.estudiante.exception.EstudianteNoEncontradoException;
@@ -114,6 +116,26 @@ public class GlobalExceptionHandler {
                 HttpStatus.CONFLICT, ex.getMessage()
         );
         problema.setTitle("Nombre de categoría ya registrado");
+
+        return problema;
+    }
+
+    @ExceptionHandler(ActividadNoEncontradaException.class)
+    public ProblemDetail manejarActividadNoEncontrada(ActividadNoEncontradaException ex) {
+        ProblemDetail problema = ProblemDetail.forStatusAndDetail(
+                HttpStatus.NOT_FOUND, ex.getMessage()
+        );
+        problema.setTitle("Actividad no encontrada");
+
+        return problema;
+    }
+
+    @ExceptionHandler(NombreActividadRegistradaException.class)
+    public ProblemDetail manejarNombreActividadRegistrado(NombreActividadRegistradaException ex) {
+        ProblemDetail problema = ProblemDetail.forStatusAndDetail(
+                HttpStatus.CONFLICT, ex.getMessage()
+        );
+        problema.setTitle("Nombre de actividad ya registrado");
 
         return problema;
     }
